@@ -2,7 +2,7 @@
 
 Django 6.1 + Django REST Framework backend for the Bangladesh Travel Planner.
 
-> **Status:** `accounts` is implemented (`Profile.home_district` is pending until `destinations` exists). The other apps are still **planned**. Update this file as models are implemented or changed.
+> **Status:** `accounts` and `destinations` are implemented (`Profile.home_district` is not added yet). The other apps are still **planned**. Update this file as models are implemented or changed.
 
 ## Apps at a glance
 

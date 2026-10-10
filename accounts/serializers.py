@@ -9,7 +9,18 @@ from .models import LANGUAGE_CHOICES, Profile
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['preferred_language', 'travel_style']
+        fields = ['preferred_language', 'travel_style', 'updated_at']
+        read_only_fields = ['updated_at']
+        extra_kwargs = {'travel_style': {'allow_null': True}}
+
+    def validate_travel_style(self, value):
+        # The column is blank, not nullable, so `null` (clear it) is stored as ''.
+        return value or ''
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['travel_style'] = data['travel_style'] or None
+        return data
 
 
 class UserSerializer(serializers.ModelSerializer):

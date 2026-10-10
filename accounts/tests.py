@@ -9,6 +9,7 @@ class AuthApiTests(APITestCase):
     refresh_url = '/api/auth/refresh/'
     logout_url = '/api/auth/logout/'
     me_url = '/api/auth/me/'
+    profile_url = '/api/auth/profile/'
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -93,4 +94,42 @@ class AuthApiTests(APITestCase):
         tokens = self.login()
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {tokens['access']}")
         res = self.client.put(self.me_url, {'first_name': 'X'})
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_profile_requires_auth(self):
+        res = self.client.get(self.profile_url)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_profile_get_and_patch(self):
+        tokens = self.login()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {tokens['access']}")
+
+        res = self.client.get(self.profile_url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['preferred_language'], 'en')
+        self.assertIsNone(res.data['travel_style'])
+        self.assertIn('updated_at', res.data)
+
+        res = self.client.patch(self.profile_url, {'preferred_language': 'bn', 'travel_style': 'comfort'})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['preferred_language'], 'bn')
+        self.assertEqual(res.data['travel_style'], 'comfort')
+        self.assertEqual(self.client.get(self.me_url).data['profile']['travel_style'], 'comfort')
+
+        res = self.client.patch(self.profile_url, {'travel_style': None}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIsNone(res.data['travel_style'])
+        self.assertEqual(res.data['preferred_language'], 'bn')
+
+    def test_profile_rejects_invalid_choice(self):
+        tokens = self.login()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {tokens['access']}")
+        res = self.client.patch(self.profile_url, {'preferred_language': 'fr'})
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('preferred_language', res.data)
+
+    def test_profile_put_not_allowed(self):
+        tokens = self.login()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {tokens['access']}")
+        res = self.client.put(self.profile_url, {'preferred_language': 'bn'})
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

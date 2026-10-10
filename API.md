@@ -154,7 +154,8 @@ Response `200`:
   "is_staff": false,
   "profile": {
     "preferred_language": "bn",
-    "travel_style": "budget"
+    "travel_style": "budget",
+    "updated_at": "2026-10-10T09:30:00Z"
   }
 }
 ```
@@ -169,7 +170,9 @@ Request:
 Response `200`: same shape as `GET /api/auth/me/`.
 
 ### `GET /api/auth/profile/` 🔒
-Returns the caller's `Profile`. The profile always exists because a `post_save` signal creates it with the user.
+Returns the caller's `Profile`. The profile always exists because a `post_save` signal creates it with the user. `travel_style` is `null` when not set.
+
+> `home_district` is not returned or accepted yet. It is added once the `destinations` app exists.
 
 Response `200`:
 ```json
@@ -282,6 +285,8 @@ Each item in `results`:
 }
 ```
 `cover_image` is the URL of the destination's `is_cover` image, or the first image by `order`, or `null` if it has none. Use `prefetch_related("images")` to avoid N+1 queries. `avg_rating` and `review_count` are computed with annotations. `is_favorite` is `false` when the caller is not logged in.
+
+> Until the `reviews` app exists, `avg_rating` is always `null`, `review_count` is `0`, `is_favorite` is `false`, and `ordering=-avg_rating` is ignored. Supported `ordering` values today: `avg_daily_cost_bdt`, `name_en` (with optional `-`). Invalid `month` or `max_daily_cost` returns `400`.
 
 ### `GET /api/destinations/{slug}/` 🌐
 Returns every field in the list item above, plus the following:
