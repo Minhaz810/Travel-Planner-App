@@ -2,7 +2,7 @@
 
 The endpoints the React frontend calls, grouped by Django app. They are built on the models in [Models.md](Models.md).
 
-> **Status:** these are the **planned** endpoints. None of them exist yet. Update this file as views are implemented or changed.
+> **Status:** the `accounts` endpoints `register`, `login`, `refresh`, `logout` and `me` are implemented (`accounts/urls.py`). Everything else is still **planned**. Update this file as views are implemented or changed.
 
 ## Conventions
 
@@ -23,7 +23,7 @@ The endpoints the React frontend calls, grouped by Django app. They are built on
 - **Errors:** DRF's default format.
   ```json
   // 400 validation error
-  { "email": ["A user with this email already exists."] }
+  { "username": ["A user with that username already exists."] }
   // 401 / 403 / 404
   { "detail": "Authentication credentials were not provided." }
   ```
@@ -89,13 +89,20 @@ Creates a user and its `Profile`, then returns a JWT pair so the user is logged 
 Request:
 ```json
 {
+  "username": "rahim",
   "email": "rahim@example.com",
-  "full_name": "Rahim Uddin",
+  "first_name": "Rahim",
+  "last_name": "Uddin",
   "password": "s3cret-pass",
   "preferred_language": "bn"
 }
 ```
-`preferred_language` is optional and defaults to `"en"`.
+`username`, `email` and `password` are required. `first_name`, `last_name` and `preferred_language` are optional (`preferred_language` defaults to `"en"`).
+
+Errors (`400`): a taken username, an email already used by another account (case-insensitive), or a password that fails Django's password validators:
+```json
+{ "password": ["This password is too short. It must contain at least 8 characters."] }
+```
 
 Response `201`:
 ```json
@@ -109,13 +116,13 @@ Response `201`:
 ### `POST /api/auth/login/` 🌐
 Request:
 ```json
-{ "email": "rahim@example.com", "password": "s3cret-pass" }
+{ "username": "rahim", "password": "s3cret-pass" }
 ```
 Response `200`:
 ```json
 { "access": "eyJhbGciOiJIUzI1NiIs...", "refresh": "eyJhbGciOiJIUzI1NiIs..." }
 ```
-This is Simple JWT's `TokenObtainPairView`. A wrong email or password returns `401` with `{ "detail": "No active account found with the given credentials" }`. Call `GET /api/auth/me/` afterwards to load the user.
+This is Simple JWT's `TokenObtainPairView`. A wrong username or password returns `401` with `{ "detail": "No active account found with the given credentials" }`. Call `GET /api/auth/me/` afterwards to load the user.
 
 ### `POST /api/auth/refresh/` 🌐
 Simple JWT's `TokenRefreshView`.
@@ -140,23 +147,24 @@ Response `200`:
 ```json
 {
   "id": 7,
+  "username": "rahim",
   "email": "rahim@example.com",
-  "full_name": "Rahim Uddin",
+  "first_name": "Rahim",
+  "last_name": "Uddin",
   "is_staff": false,
   "profile": {
     "preferred_language": "bn",
-    "home_district": { "id": 1, "slug": "dhaka", "name_en": "Dhaka", "name_bn": "ঢাকা" },
     "travel_style": "budget"
   }
 }
 ```
 
 ### `PATCH /api/auth/me/` 🔒
-Updates account fields only. Use `PATCH /api/auth/profile/` for profile fields. `email` cannot be changed here.
+Updates `first_name` and `last_name` only. `id`, `username`, `email`, `is_staff` and `profile` are read-only and silently ignored. Use `PATCH /api/auth/profile/` for profile fields. `PUT` returns `405`.
 
 Request:
 ```json
-{ "full_name": "Rahim Uddin Ahmed" }
+{ "last_name": "Uddin Ahmed" }
 ```
 Response `200`: same shape as `GET /api/auth/me/`.
 

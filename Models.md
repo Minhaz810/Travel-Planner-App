@@ -2,7 +2,7 @@
 
 Django 6.1 + Django REST Framework backend for the Bangladesh Travel Planner.
 
-> **Status:** these are the **planned** models. The apps below have not been created yet. Only the `core` project exists so far. Update this file as models are implemented or changed.
+> **Status:** `accounts` is implemented (`Profile.home_district` is pending until `destinations` exists). The other apps are still **planned**. Update this file as models are implemented or changed.
 
 ## Apps at a glance
 
@@ -30,6 +30,7 @@ User 1──* SavedTrip 1──1 TripBudget 1──* Expense
 ```
 
 Conventions:
+- Choices are module-level lists of tuples (e.g. `LANGUAGE_CHOICES = [("en", "English"), ...]`), not `TextChoices` classes.
 - Text shown to users has `_en` and `_bn` variants (English and Bangla).
 - All money is stored in **BDT** as `DecimalField(max_digits=10, decimal_places=2)`. The `_bdt` suffix marks money fields.
 - Every model has `created_at` (`auto_now_add`). Editable models also have `updated_at` (`auto_now`). These are left out of the tables below.
@@ -39,21 +40,15 @@ Conventions:
 ## 1. `accounts`
 
 ### `User`
-Custom user (`AUTH_USER_MODEL = "accounts.User"`) that logs in with email instead of username.
-
-| Field | Type | Notes |
-|---|---|---|
-| `email` | `EmailField` | unique, `USERNAME_FIELD` |
-| `full_name` | `CharField(150)` | |
-| `is_active` / `is_staff` | `BooleanField` | standard Django flags |
+Django's built-in `django.contrib.auth.models.User` (no custom user model). Users log in with `username` + `password`. It provides `username`, `email`, `first_name`, `last_name`, `is_active`, `is_staff` and `date_joined`.
 
 ### `Profile`
 | Field | Type | Notes |
 |---|---|---|
 | `user` | `OneToOneField(User)` | created automatically by a `post_save` signal |
-| `preferred_language` | `CharField` choices `en` / `bn` | default `en`. The UI uses it, and the chatbot replies in this language |
-| `home_district` | `FK(District)`, nullable | default trip origin |
-| `travel_style` | choices `budget` / `comfort` / `luxury` | optional |
+| `preferred_language` | `CharField` choices `LANGUAGE_CHOICES` (`en` / `bn`) | default `en`. The UI uses it, and the chatbot replies in this language |
+| `home_district` | `FK(District)`, nullable | default trip origin. **Not added yet**, waiting on `destinations` |
+| `travel_style` | choices `TRAVEL_STYLE_CHOICES` (`budget` / `comfort` / `luxury`) | optional, blank |
 
 ---
 
