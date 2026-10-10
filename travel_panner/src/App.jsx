@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AuthProvider from './auth/AuthProvider'
 import { GuestRoute, ProtectedRoute } from './auth/RouteGuards'
 import Layout from './components/Layout'
+import DestinationDetail from './pages/DestinationDetail'
+import Destinations from './pages/Destinations'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
@@ -14,6 +16,8 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="destinations" element={<Destinations />} />
+            <Route path="destinations/:slug" element={<DestinationDetail />} />
             <Route element={<GuestRoute />}>
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />

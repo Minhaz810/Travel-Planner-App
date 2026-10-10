@@ -44,10 +44,39 @@ export const LANGUAGE_OPTIONS = [
   { value: 'bn', label: 'বাংলা' },
 ]
 
-export const TRAVEL_STYLE_LABELS = {
-  budget: 'Budget',
-  comfort: 'Comfort',
-  luxury: 'Luxury',
+export const TRAVEL_STYLE_OPTIONS = [
+  { value: 'budget', label: 'Budget' },
+  { value: 'comfort', label: 'Comfort' },
+  { value: 'luxury', label: 'Luxury' },
+]
+
+export const CATEGORY_OPTIONS = [
+  { value: 'beach', label: 'Beach' },
+  { value: 'hill', label: 'Hill' },
+  { value: 'forest', label: 'Forest' },
+  { value: 'heritage', label: 'Heritage' },
+  { value: 'river', label: 'River' },
+  { value: 'religious', label: 'Religious' },
+  { value: 'city', label: 'City' },
+]
+
+export const CATEGORY_LABELS = Object.fromEntries(CATEGORY_OPTIONS.map((o) => [o.value, o.label]))
+
+export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+export const STAY_TYPE_OPTIONS = [
+  { value: 'budget', label: 'Budget' },
+  { value: 'mid', label: 'Mid-range' },
+  { value: 'luxury', label: 'Luxury' },
+]
+
+export const STAY_TYPE_LABELS = Object.fromEntries(STAY_TYPE_OPTIONS.map((o) => [o.value, o.label]))
+
+export const TRANSPORT_MODE_LABELS = {
+  car: 'Car',
+  train: 'Train',
+  launch: 'Launch',
+  other: 'Bus / other',
 }
 
 export const APP_NAME = 'Travel Planner'

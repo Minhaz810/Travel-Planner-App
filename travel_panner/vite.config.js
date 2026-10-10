@@ -8,6 +8,7 @@ export default defineConfig({
     // Forward API calls to Django so the browser sees a single origin (no CORS needed in dev).
     proxy: {
       '/api': 'http://127.0.0.1:8000',
+      '/media': 'http://127.0.0.1:8000',
     },
   },
 })

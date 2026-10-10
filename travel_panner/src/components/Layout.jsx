@@ -41,6 +41,9 @@ function Navbar() {
           <NavLink to="/" end className="nav-link">
             Home
           </NavLink>
+          <NavLink to="/destinations" className="nav-link">
+            Destinations
+          </NavLink>
           {isAuthenticated ? (
             <>
               <NavLink to="/profile" className="nav-link nav-link--user">

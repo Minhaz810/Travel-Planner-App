@@ -96,4 +96,24 @@ export const authApi = {
   logout: (refresh) => apiFetch('/auth/logout/', { method: 'POST', body: { refresh } }),
   getMe: () => apiFetch('/auth/me/', { auth: true }),
   updateMe: (changes) => apiFetch('/auth/me/', { method: 'PATCH', body: changes, auth: true }),
+  getProfile: () => apiFetch('/auth/profile/', { auth: true }),
+  updateProfile: (changes) => apiFetch('/auth/profile/', { method: 'PATCH', body: changes, auth: true }),
+}
+
+// Builds `path?key=value`, skipping empty values.
+export function withQuery(path, params = {}) {
+  const query = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ''))
+  const qs = query.toString()
+  return qs ? `${path}?${qs}` : path
+}
+
+// Paths for the public destinations endpoints, used with `useApi`.
+export const destinationsApi = {
+  divisions: () => '/destinations/divisions/',
+  districts: (params) => withQuery('/destinations/districts/', params),
+  list: (params) => withQuery('/destinations/', params),
+  detail: (slug) => `/destinations/${slug}/`,
+  stays: (slug, params) => withQuery(`/destinations/${slug}/stays/`, params),
+  attractions: (slug) => `/destinations/${slug}/attractions/`,
+  routes: (params) => withQuery('/destinations/routes/', params),
 }

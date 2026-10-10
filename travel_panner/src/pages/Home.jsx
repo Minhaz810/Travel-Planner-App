@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { destinationsApi } from '../api'
 import { useAuth } from '../auth/AuthContext'
+import DestinationCard from '../components/DestinationCard'
 import Icon from '../components/Icon'
+import useApi from '../hooks/useApi'
 
 const PHOTOS = [
   { src: '/images/sajek-valley-1.jpg', place: 'Sajek Valley', district: 'Rangamati', credit: 'Biplobkgc / CC BY-SA 3.0' },
@@ -35,6 +38,7 @@ const STATS = [
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth()
+  const featured = useApi(destinationsApi.list({ featured: 'true' }))
 
   return (
     <>
@@ -98,6 +102,28 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {featured.data?.results.length > 0 && (
+        <section className="section section--tight">
+          <div className="container">
+            <div className="section__head section__head--row">
+              <div>
+                <span className="eyebrow eyebrow--plain">Featured</span>
+                <h2>Popular places to visit</h2>
+              </div>
+              <Link to="/destinations" className="btn btn--outline btn--sm">
+                See all destinations
+                <Icon name="arrowRight" size={16} />
+              </Link>
+            </div>
+            <div className="dest-grid">
+              {featured.data.results.slice(0, 6).map((d) => (
+                <DestinationCard key={d.slug} destination={d} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="section">
         <div className="container">
