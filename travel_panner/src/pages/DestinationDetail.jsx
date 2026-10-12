@@ -217,6 +217,14 @@ export default function DestinationDetail() {
             <Icon name="mapPin" size={16} />
             {localized(dest.district, 'name', lang)}
           </p>
+          <Link
+            to="/planner"
+            state={{ prompt: `Plan a 3-day trip to ${dest.name_en} (${dest.district.name_en}). Include costs in taka.` }}
+            className="btn btn--primary btn--sm"
+          >
+            <Icon name="sparkles" size={16} />
+            Plan a trip here with AI
+          </Link>
         </header>
 
         <div className="destination__grid">

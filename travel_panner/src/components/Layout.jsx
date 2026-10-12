@@ -46,6 +46,12 @@ function Navbar() {
           </NavLink>
           {isAuthenticated ? (
             <>
+              <NavLink to="/planner" className="nav-link">
+                Planner
+              </NavLink>
+              <NavLink to="/trips" className="nav-link">
+                My trips
+              </NavLink>
               <NavLink to="/profile" className="nav-link nav-link--user">
                 <span className="avatar avatar--sm">{initials(user)}</span>
                 {user.first_name || user.username}

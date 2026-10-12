@@ -59,10 +59,15 @@ export default function Home() {
 
             <div className="hero__actions">
               {isAuthenticated ? (
-                <Link to="/profile" className="btn btn--primary btn--lg">
-                  Welcome back, {user.first_name || user.username}
-                  <Icon name="arrowRight" size={18} />
-                </Link>
+                <>
+                  <Link to="/planner" className="btn btn--primary btn--lg">
+                    Plan a trip with AI
+                    <Icon name="arrowRight" size={18} />
+                  </Link>
+                  <Link to="/trips" className="btn btn--outline btn--lg">
+                    My trips, {user.first_name || user.username}
+                  </Link>
+                </>
               ) : (
                 <>
                   <Link to="/register" className="btn btn--primary btn--lg">

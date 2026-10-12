@@ -79,4 +79,15 @@ export const TRANSPORT_MODE_LABELS = {
   other: 'Bus / other',
 }
 
+export const EXPENSE_CATEGORY_OPTIONS = [
+  { value: 'transport', label: 'Transport', icon: 'route' },
+  { value: 'stay', label: 'Stay', icon: 'bed' },
+  { value: 'food', label: 'Food', icon: 'utensils' },
+  { value: 'tickets', label: 'Tickets', icon: 'ticket' },
+  { value: 'shopping', label: 'Shopping', icon: 'tag' },
+  { value: 'other', label: 'Other', icon: 'wallet' },
+]
+
+export const EXPENSE_CATEGORIES = Object.fromEntries(EXPENSE_CATEGORY_OPTIONS.map((o) => [o.value, o]))
+
 export const APP_NAME = 'Travel Planner'

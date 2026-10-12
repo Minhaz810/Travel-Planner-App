@@ -6,8 +6,12 @@ import DestinationDetail from './pages/DestinationDetail'
 import Destinations from './pages/Destinations'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import NewTrip from './pages/NewTrip'
+import Planner from './pages/Planner'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
+import TripDetail from './pages/TripDetail'
+import Trips from './pages/Trips'
 
 export default function App() {
   return (
@@ -24,6 +28,10 @@ export default function App() {
             </Route>
             <Route element={<ProtectedRoute />}>
               <Route path="profile" element={<Profile />} />
+              <Route path="planner/:chatId?" element={<Planner />} />
+              <Route path="trips" element={<Trips />} />
+              <Route path="trips/new" element={<NewTrip />} />
+              <Route path="trips/:tripId" element={<TripDetail />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

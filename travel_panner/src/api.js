@@ -117,3 +117,33 @@ export const destinationsApi = {
   attractions: (slug) => `/destinations/${slug}/attractions/`,
   routes: (params) => withQuery('/destinations/routes/', params),
 }
+
+export const plannerApi = {
+  chatsPath: '/planner/chats/',
+  chatPath: (id) => `/planner/chats/${id}/`,
+  tripsPath: '/planner/trips/',
+  tripPath: (id) => `/planner/trips/${id}/`,
+
+  createChat: (payload = {}) => apiFetch('/planner/chats/', { method: 'POST', body: payload, auth: true }),
+  getChat: (id) => apiFetch(`/planner/chats/${id}/`, { auth: true }),
+  updateChat: (id, changes) => apiFetch(`/planner/chats/${id}/`, { method: 'PATCH', body: changes, auth: true }),
+  deleteChat: (id) => apiFetch(`/planner/chats/${id}/`, { method: 'DELETE', auth: true }),
+  sendMessage: (id, text) => apiFetch(`/planner/chats/${id}/messages/`, { method: 'POST', body: { text }, auth: true }),
+
+  createTrip: (payload) => apiFetch('/planner/trips/', { method: 'POST', body: payload, auth: true }),
+  updateTrip: (id, changes) => apiFetch(`/planner/trips/${id}/`, { method: 'PATCH', body: changes, auth: true }),
+  deleteTrip: (id) => apiFetch(`/planner/trips/${id}/`, { method: 'DELETE', auth: true }),
+}
+
+// Budget endpoints are nested under a saved trip.
+const budgetPath = (tripId) => `/planner/trips/${tripId}/budget/`
+
+export const budgetApi = {
+  get: (tripId) => apiFetch(budgetPath(tripId), { auth: true }),
+  save: (tripId, payload) => apiFetch(budgetPath(tripId), { method: 'PUT', body: payload, auth: true }),
+  addExpense: (tripId, payload) =>
+    apiFetch(`${budgetPath(tripId)}expenses/`, { method: 'POST', body: payload, auth: true }),
+  updateExpense: (tripId, id, changes) =>
+    apiFetch(`${budgetPath(tripId)}expenses/${id}/`, { method: 'PATCH', body: changes, auth: true }),
+  deleteExpense: (tripId, id) => apiFetch(`${budgetPath(tripId)}expenses/${id}/`, { method: 'DELETE', auth: true }),
+}
