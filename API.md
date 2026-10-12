@@ -2,7 +2,7 @@
 
 The endpoints the React frontend calls, grouped by Django app. They are built on the models in [Models.md](Models.md).
 
-> **Status:** the `accounts` endpoints `register`, `login`, `refresh`, `logout` and `me` are implemented (`accounts/urls.py`). Everything else is still **planned**. Update this file as views are implemented or changed.
+> **Status:** `accounts` (except `change-password`), `destinations`, `planner` and `budget` are implemented. `reviews` and `POST /api/auth/change-password/` are still **planned**. Update this file as views are implemented or changed.
 
 ## Conventions
 
@@ -382,6 +382,8 @@ If `from` or `to` is missing, the response is `400`.
 ## 3. `planner`
 This is the Gemini chatbot plus saved trips. The Gemini API key stays on the server, and the frontend never calls Gemini directly.
 
+> Server config: `GEMINI_API_KEY` (required), `GEMINI_MODEL` (default `gemini-3.8-flash`) and `CHAT_RATE_LIMIT` (default `20/min`) in `backend/.env`. Only the last 20 messages of a session are sent to Gemini.
+
 ### `GET /api/planner/chats/` 🔒
 Lists the caller's chat sessions, newest first. Messages are not included.
 
@@ -444,6 +446,8 @@ Request:
 { "text": "Plan 3 days in Sylhet for 2 people under 10,000 taka" }
 ```
 `text` is required, 1–2000 characters.
+
+The session `title` is set from the first message (up to 60 characters) when it is still empty.
 
 Response `201`:
 ```json
@@ -544,7 +548,7 @@ Response `200`:
   "expenses": [ "...same shape as the items in GET .../expenses/" ]
 }
 ```
-`spent`, `remaining`, `percent_used`, `per_person`, `is_over_budget` and `per_category` are computed by the serializer and are read-only. `per_person` is `spent / travelers`.
+`spent`, `remaining`, `percent_used`, `per_person`, `is_over_budget` and `per_category` are computed by the serializer and are read-only. `per_person` is `spent / travelers`. `percent_used` is `null` when `total_budget_bdt` is `0`. `remaining` is negative when over budget.
 
 ### `PUT /api/planner/trips/{id}/budget/` 🔒
 Creates the budget, or replaces it if one already exists.
@@ -610,7 +614,7 @@ Response `200`: the updated expense.
 ### `DELETE /api/planner/trips/{id}/budget/expenses/{expense_id}/` 🔒
 Response `204`.
 
-> After any expense change, call `GET .../budget/` again to refresh the totals. Alternatively, the expense endpoints can return the updated budget summary under a `budget` key. Pick one approach when implementing and update this file.
+> After any expense change, call `GET .../budget/` again to refresh the totals. The expense endpoints return only the expense.
 
 ---
 

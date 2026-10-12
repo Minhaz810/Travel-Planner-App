@@ -23,4 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
     path('api/destinations/', include('destinations.urls')),
+    path('api/planner/', include('planner.urls')),
+    path('api/planner/trips/<int:trip_id>/budget/', include('budget.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

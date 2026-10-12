@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     # Local apps
     'accounts',
     'destinations',
+    'planner',
+    'budget',
 ]
 
 MIDDLEWARE = [
@@ -159,7 +161,14 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_THROTTLE_RATES': {
+        'chat': os.getenv('CHAT_RATE_LIMIT', '20/min'),
+    },
 }
+
+# Google Gemini (planner chatbot). The key stays on the server.
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-3.8-flash')
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.getenv('JWT_ACCESS_MINUTES', '30'))),
